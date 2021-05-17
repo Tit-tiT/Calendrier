@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class Bouton extends JButton implements MouseListener, ActionListener {
+public class Bouton extends JButton implements MouseListener, ActionListener{
 
     Color back;
     Color hover=null;
@@ -16,6 +16,7 @@ public class Bouton extends JButton implements MouseListener, ActionListener {
 
     public Bouton(String titre){
         super(titre);
+        setContentAreaFilled(false);
         setBackground2(Color.WHITE);
         setBorder(new LineBorder(Color.BLACK));
     }
@@ -41,12 +42,13 @@ public class Bouton extends JButton implements MouseListener, ActionListener {
 
     public void setHoverColor(Color bg){
         this.hover=bg;
-        this.addMouseListener(actionSetHoverColor);
+        //this.addMouseListener(actionSetHoverColor);
     }
 
     public void setPressColor(Color bg){
         this.press=bg;
-        this.addActionListener(actionStPressColor);
+        //this.addActionListener(actionStPressColor);
+        //this.paintComponent(new super.paintCompoment()
     }
 
     MouseListener actionSetHoverColor = new MouseListener(){
@@ -70,9 +72,25 @@ public class Bouton extends JButton implements MouseListener, ActionListener {
     ActionListener actionStPressColor = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent a) {
-            ((Bouton)a.getSource()).setBackground(((Bouton)a.getSource()).getPress());
+            //((Bouton)a.getSource()).setBackground(((Bouton)a.getSource()).getPress());
+            while(((Bouton)a.getSource()).getModel().isPressed()){
+                ((Bouton)a.getSource()).setBackground(((Bouton)a.getSource()).getPress());
+            }
         }
     };
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        if (getModel().isPressed()) {
+            g.setColor(press);
+        } else if (getModel().isRollover()) {
+            g.setColor(hover);
+        } else {
+            g.setColor(getBackground());
+        }
+        g.fillRect(0, 0, getWidth(), getHeight());
+        super.paintComponent(g);
+    }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) { }
